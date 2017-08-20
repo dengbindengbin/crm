@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com._520it.crm.mapper.CatMapper" >
+  <resultMap id="BaseResultMap" type="com._520it.crm.domain.Cat" >
+    <id column="id" property="id"  />
+	<result column="age" property="age"  />
+	<result column="name" property="name"  />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="long" >
+    delete from cat where id = #{id}
+  </delete>
+  <insert id="insert" parameterType="com._520it.crm.domain.Cat" useGeneratedKeys="true" keyProperty="id" >
+    insert into cat 
+    (age,name)
+    values 
+    (#{age},#{name})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com._520it.crm.domain.Cat" >
+    update cat
+    set
+	    age=#{age},
+	    name=#{name}
+    where id = #{id}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="long" >
+    select * from cat where id = #{id}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select * from cat
+  </select>
+  <sql id="conditionSql">
+  	<where>
+  	</where>
+  </sql>
+  <select id="queryPageCount" resultType="long">
+  	select count(0) from cat
+  	<include refid="conditionSql"/>
+  </select>
+  <select id="queryPageData" resultMap="BaseResultMap">
+  	select * from cat
+  	<include refid="conditionSql"/>
+  	limit #{start},#{rows}
+  </select>
+</mapper>

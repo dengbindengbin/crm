@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+			http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<!--1.自定义Realm-->
+	<bean id="userRealm" class="com._520it.crm.realm.UserRealm">
+		<property name="employeeService" ref="employeeServiceImpl"/>
+		<property name="roleService" ref="roleServiceImpl"/>
+		<property name="permissionService" ref="permissionServiceImpl"/>
+	</bean>
+	<!--2.SecurityManager-->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realm" ref="userRealm"/>
+	</bean>
+	<!--自定义Fillter-->
+	<bean id="extendFormAuthenticationFilter" class="com._520it.crm.filter.ExtendFormAuthenticationFilter"></bean>
+	<!--3配置ShiroFilter-->
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="securityManager" ref="securityManager"/>
+		<property name="loginUrl" value="/login"/>
+		<property name="successUrl" value="/main"/>
+		<property name="filters">
+			<map>
+				<entry key="authc" value-ref="extendFormAuthenticationFilter"/>
+			</map>
+		</property>
+		<property name="filterChainDefinitions">
+			<value>
+				/static/** = anon
+				/logout = logout
+				/** = authc
+			</value>
+		</property>
+	</bean>
+	<!--开启注解标签的扫描-->
+	<aop:config proxy-target-class="true"/>
+	<bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+		<property name="securityManager" ref="securityManager"/>
+	</bean>
+</beans>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com._520it.crm.mapper.SystemLogMapper" >
+  <resultMap id="BaseResultMap" type="com._520it.crm.domain.SystemLog" >
+    <id column="id" property="id"  />
+	<result column="opIp" property="opIp"  />
+	<!--<result column="opUser" property="opUser"  />-->
+	<result column="opTime" property="opTime"  />
+	<result column="params" property="params"  />
+	<result column="function" property="function"  />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="long" >
+    delete from systemLog where id = #{id}
+  </delete>
+  <insert id="insert" parameterType="com._520it.crm.domain.SystemLog" useGeneratedKeys="true" keyProperty="id" >
+    insert into systemLog 
+    (opIp,opUser_id,opTime,params,function)
+    values 
+    (#{opIp},#{opUser.id},#{opTime},#{params},#{function})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com._520it.crm.domain.SystemLog" >
+    update systemLog
+    set
+	    opIp=#{opIp},
+	    opUser_id=#{opUser.id},
+	    opTime=#{opTime},
+	    params=#{params},
+	    function=#{function}
+    where id = #{id}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="long" >
+    select * from systemLog where id = #{id}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select * from systemLog
+  </select>
+  <sql id="conditionSql">
+  	<where>
+  	</where>
+  </sql>
+  <select id="queryPageCount" resultType="long">
+  	select count(0) from systemLog
+  	<include refid="conditionSql"/>
+  </select>
+  <select id="queryPageData" resultMap="BaseResultMap">
+  	select * from systemLog
+  	<include refid="conditionSql"/>
+  	limit #{start},#{rows}
+  </select>
+</mapper>
